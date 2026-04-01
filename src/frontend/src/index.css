@@ -1,0 +1,215 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  font-weight: 200 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Plus Jakarta Sans";
+  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --radius: 0.75rem;
+    --background: 0.1 0.015 250;
+    --foreground: 0.96 0.005 220;
+    --card: 0.13 0.018 250;
+    --card-foreground: 0.96 0.005 220;
+    --popover: 0.15 0.018 250;
+    --popover-foreground: 0.96 0.005 220;
+    --primary: 0.65 0.22 250;
+    --primary-foreground: 0.1 0.015 250;
+    --secondary: 0.2 0.018 250;
+    --secondary-foreground: 0.96 0.005 220;
+    --muted: 0.22 0.012 250;
+    --muted-foreground: 0.62 0.01 220;
+    --accent: 0.65 0.22 250;
+    --accent-foreground: 0.1 0.015 250;
+    --destructive: 0.55 0.18 25;
+    --destructive-foreground: 0.96 0.005 220;
+    --border: 0.28 0.015 250;
+    --input: 0.22 0.012 250;
+    --ring: 0.65 0.22 250;
+    --chart-1: 0.65 0.22 250;
+    --chart-2: 0.66 0.1 195;
+    --chart-3: 0.52 0.2 280;
+    --chart-4: 0.67 0.18 145;
+    --chart-5: 0.55 0.18 25;
+    --sidebar: 0.13 0.018 250;
+    --sidebar-foreground: 0.96 0.005 220;
+    --sidebar-primary: 0.65 0.22 250;
+    --sidebar-primary-foreground: 0.1 0.015 250;
+    --sidebar-accent: 0.2 0.018 250;
+    --sidebar-accent-foreground: 0.96 0.005 220;
+    --sidebar-border: 0.28 0.015 250;
+    --sidebar-ring: 0.65 0.22 250;
+    --blue: 0.65 0.22 250;
+    --blue-glow: 0.35 0.18 250;
+    --teal: 0.66 0.1 195;
+    --purple: 0.52 0.2 280;
+    --red: 0.55 0.18 25;
+    --green: 0.67 0.18 145;
+    --gold: 0.8 0.18 80;
+    --silver: 0.72 0.01 220;
+    --bronze: 0.62 0.12 48;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: "Bricolage Grotesque", "Inter", system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-blue {
+    color: oklch(var(--blue));
+  }
+  .bg-blue {
+    background-color: oklch(var(--blue));
+  }
+  .border-blue {
+    border-color: oklch(var(--blue));
+  }
+  .bg-blue\/5 {
+    background-color: oklch(var(--blue) / 0.05);
+  }
+  .bg-blue\/10 {
+    background-color: oklch(var(--blue) / 0.1);
+  }
+  .bg-blue\/15 {
+    background-color: oklch(var(--blue) / 0.15);
+  }
+  .bg-blue\/20 {
+    background-color: oklch(var(--blue) / 0.2);
+  }
+  .bg-blue\/30 {
+    background-color: oklch(var(--blue) / 0.3);
+  }
+  .border-blue\/20 {
+    border-color: oklch(var(--blue) / 0.2);
+  }
+  .border-blue\/25 {
+    border-color: oklch(var(--blue) / 0.25);
+  }
+  .border-blue\/30 {
+    border-color: oklch(var(--blue) / 0.3);
+  }
+  .border-blue\/50 {
+    border-color: oklch(var(--blue) / 0.5);
+  }
+  .text-teal {
+    color: oklch(var(--teal));
+  }
+  .bg-teal\/15 {
+    background-color: oklch(var(--teal) / 0.15);
+  }
+  .bg-teal\/20 {
+    background-color: oklch(var(--teal) / 0.2);
+  }
+  .border-teal\/20 {
+    border-color: oklch(var(--teal) / 0.2);
+  }
+  .border-teal\/30 {
+    border-color: oklch(var(--teal) / 0.3);
+  }
+  .text-purple {
+    color: oklch(var(--purple));
+  }
+  .bg-purple\/15 {
+    background-color: oklch(var(--purple) / 0.15);
+  }
+  .bg-purple\/20 {
+    background-color: oklch(var(--purple) / 0.2);
+  }
+  .border-purple\/25 {
+    border-color: oklch(var(--purple) / 0.25);
+  }
+  .border-purple\/30 {
+    border-color: oklch(var(--purple) / 0.3);
+  }
+  .text-green {
+    color: oklch(var(--green));
+  }
+  .bg-green\/20 {
+    background-color: oklch(var(--green) / 0.2);
+  }
+  .text-red {
+    color: oklch(var(--red));
+  }
+  .bg-red\/20 {
+    background-color: oklch(var(--red) / 0.2);
+  }
+  .text-gold {
+    color: oklch(var(--gold));
+  }
+  .bg-gold\/10 {
+    background-color: oklch(var(--gold) / 0.1);
+  }
+  .bg-gold\/15 {
+    background-color: oklch(var(--gold) / 0.15);
+  }
+  .bg-gold\/20 {
+    background-color: oklch(var(--gold) / 0.2);
+  }
+  .border-gold\/20 {
+    border-color: oklch(var(--gold) / 0.2);
+  }
+  .border-gold\/25 {
+    border-color: oklch(var(--gold) / 0.25);
+  }
+  .border-gold\/30 {
+    border-color: oklch(var(--gold) / 0.3);
+  }
+  .text-silver {
+    color: oklch(var(--silver));
+  }
+  .text-bronze {
+    color: oklch(var(--bronze));
+  }
+  .bg-bronze\/10 {
+    background-color: oklch(var(--bronze) / 0.1);
+  }
+  .bg-bronze\/15 {
+    background-color: oklch(var(--bronze) / 0.15);
+  }
+  .border-bronze\/25 {
+    border-color: oklch(var(--bronze) / 0.25);
+  }
+  .glow-blue {
+    box-shadow: 0 0 40px oklch(var(--blue-glow) / 0.5);
+  }
+  .card-surface {
+    background: oklch(var(--card));
+    border: 1px solid oklch(var(--border));
+  }
+  .gradient-hero {
+    background: radial-gradient(
+        ellipse 80% 60% at 60% 40%,
+        oklch(var(--blue-glow) / 0.3) 0%,
+        transparent 60%
+      ), oklch(var(--background));
+  }
+}
