@@ -1,10 +1,46 @@
 import { Input } from "@/components/ui/input";
-import { Check, Flame, Pencil, Star, Target, Trophy, X } from "lucide-react";
-import { motion } from "motion/react";
-import { useState } from "react";
+import {
+  Camera,
+  Check,
+  Flame,
+  Pencil,
+  Star,
+  Target,
+  Trophy,
+  X,
+} from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useRef, useState } from "react";
 import { WeeklyChart } from "../components/WeeklyChart";
 import { getRankBg, getRankIcon } from "../hooks/useGrindStore";
 import type { GrindStore, RankTier } from "../hooks/useGrindStore";
+
+const AVATAR_EMOJIS = [
+  "😎",
+  "🔥",
+  "⚡",
+  "🚀",
+  "💪",
+  "🏆",
+  "🎯",
+  "👑",
+  "🦥",
+  "🐉",
+  "🌟",
+  "📎",
+  "🦁",
+  "🐺",
+  "🏋️",
+  "🤺",
+  "🧠",
+  "👊",
+  "🎮",
+  "🌊",
+  "🦊",
+  "🐯",
+  "🌙",
+  "⭐",
+];
 
 interface ProfileProps {
   store: GrindStore;
@@ -12,6 +48,7 @@ interface ProfileProps {
   currentRank: RankTier;
   onLogout: () => void;
   onUpdateName: (name: string) => void;
+  onUpdateAvatar: (emoji: string) => void;
 }
 
 export function Profile({
@@ -20,9 +57,12 @@ export function Profile({
   currentRank,
   onLogout,
   onUpdateName,
+  onUpdateAvatar,
 }: ProfileProps) {
   const [editingName, setEditingName] = useState(false);
   const [nameInput, setNameInput] = useState("");
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
+  const avatarRef = useRef<HTMLDivElement>(null);
 
   const earnedBadges = store.badges.filter((b) => b.earned);
 
@@ -77,12 +117,67 @@ export function Profile({
     if (e.key === "Escape") cancelEditing();
   };
 
+  const handleAvatarSelect = (emoji: string) => {
+    onUpdateAvatar(emoji);
+    setShowAvatarPicker(false);
+  };
+
   return (
     <div className="space-y-5 pb-20 md:pb-6 animate-fade-in">
       {/* Profile header */}
       <div className="card-surface rounded-xl p-6 shadow-card text-center space-y-3">
-        <div className="w-20 h-20 rounded-full bg-blue/20 border-2 border-blue/40 flex items-center justify-center text-2xl font-bold text-blue mx-auto">
-          {store.profile.avatar}
+        <div className="relative inline-block mx-auto" ref={avatarRef}>
+          <button
+            type="button"
+            data-ocid="profile.avatar.button"
+            onClick={() => setShowAvatarPicker((v) => !v)}
+            className="w-20 h-20 rounded-full bg-blue/20 border-2 border-blue/40 flex items-center justify-center text-2xl font-bold text-blue relative group"
+          >
+            {store.profile.avatar}
+            <span className="absolute inset-0 rounded-full bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <Camera className="w-6 h-6 text-white" />
+            </span>
+          </button>
+          <AnimatePresence>
+            {showAvatarPicker && (
+              <motion.div
+                initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                data-ocid="profile.avatar.popover"
+                className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-card border border-border rounded-2xl p-3 shadow-2xl w-64"
+              >
+                <p className="text-xs text-muted-foreground text-center mb-2 font-semibold uppercase tracking-wider">
+                  Pick your avatar
+                </p>
+                <div className="grid grid-cols-8 gap-1">
+                  {AVATAR_EMOJIS.map((emoji) => (
+                    <button
+                      key={emoji}
+                      type="button"
+                      onClick={() => handleAvatarSelect(emoji)}
+                      className={`w-7 h-7 text-lg flex items-center justify-center rounded-lg hover:bg-blue/20 transition-colors ${
+                        store.profile.avatar === emoji
+                          ? "bg-blue/30 ring-1 ring-blue"
+                          : ""
+                      }`}
+                    >
+                      {emoji}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  data-ocid="profile.avatar.close_button"
+                  onClick={() => setShowAvatarPicker(false)}
+                  className="w-full mt-2 text-xs text-muted-foreground hover:text-foreground py-1 rounded-lg hover:bg-muted/40 transition-colors"
+                >
+                  Cancel
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <div className="space-y-1">
           {editingName ? (
@@ -211,84 +306,59 @@ export function Profile({
         </div>
       </div>
 
-      {/* Weekly Chart */}
+      {/* Weekly chart */}
       <div className="card-surface rounded-xl p-5 shadow-card">
         <div className="flex items-center gap-2 mb-3">
           <Star className="w-4 h-4 text-blue" />
-          <span className="font-semibold text-foreground">
-            Weekly Performance
-          </span>
+          <span className="font-semibold text-foreground">Weekly Activity</span>
         </div>
-        <WeeklyChart dayScores={store.dayScores} height={120} />
+        <WeeklyChart dayScores={store.dayScores} height={130} />
       </div>
 
       {/* Badges */}
       <div className="card-surface rounded-xl p-5 shadow-card">
         <div className="flex items-center gap-2 mb-4">
-          <Star className="w-4 h-4 text-gold" />
-          <span className="font-semibold text-foreground">Badges</span>
-          <span className="text-xs text-muted-foreground ml-1">
-            ({earnedBadges.length}/{store.badges.length})
+          <span className="text-lg">🏅</span>
+          <span className="font-semibold text-foreground">
+            Badges ({earnedBadges.length}/{store.badges.length})
           </span>
         </div>
-        <div className="grid grid-cols-3 gap-3">
-          {store.badges.map((badge, i) => (
-            <motion.div
+        <div className="grid grid-cols-3 gap-2">
+          {store.badges.map((badge) => (
+            <div
               key={badge.id}
-              data-ocid={`profile.badge.item.${i + 1}`}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: i * 0.06 }}
-              className={`rounded-xl p-3 text-center ${
+              data-ocid={`profile.badge.item.${badge.id}`}
+              className={`rounded-xl p-3 text-center transition-all ${
                 badge.earned
-                  ? "card-surface border-blue/20 shadow-card"
-                  : "bg-muted/20 border border-border opacity-50"
+                  ? "bg-blue/10 border border-blue/20"
+                  : "bg-muted/20 border border-border/30 opacity-50"
               }`}
             >
               <div className="text-2xl mb-1">{badge.icon}</div>
-              <p className="text-xs font-semibold text-foreground truncate">
+              <p
+                className={`text-xs font-semibold truncate ${
+                  badge.earned ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
                 {badge.name}
               </p>
-              {badge.earned && badge.earnedAt && (
-                <p className="text-[10px] text-muted-foreground mt-0.5">
-                  {new Date(badge.earnedAt).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-              )}
-              {!badge.earned && (
-                <p className="text-[10px] text-muted-foreground mt-0.5">
-                  Locked
-                </p>
-              )}
-            </motion.div>
+              <p className="text-xs text-muted-foreground/70 truncate">
+                {badge.description}
+              </p>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Sign out */}
+      {/* Logout */}
       <button
         type="button"
-        data-ocid="profile.secondary_button"
+        data-ocid="profile.logout.button"
         onClick={onLogout}
-        className="w-full card-surface rounded-xl p-4 text-red hover:bg-red/10 transition-colors text-sm font-medium"
+        className="w-full py-3 rounded-xl border border-border/50 text-muted-foreground hover:text-foreground hover:bg-muted/20 transition-colors text-sm font-medium"
       >
         Sign Out
       </button>
-
-      {/* Footer */}
-      <p className="text-center text-muted-foreground text-xs pb-4">
-        © {new Date().getFullYear()}. Built with ❤️ using{" "}
-        <a
-          href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(window.location.hostname)}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue hover:underline"
-        >
-          caffeine.ai
-        </a>
-      </p>
     </div>
   );
 }

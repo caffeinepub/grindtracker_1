@@ -45,6 +45,7 @@ export default function App() {
     deleteTask,
     toggleTask,
     updateProfileName,
+    updateProfileAvatar,
     addPresetTask,
     deletePresetTask,
   } = useGrindStore(userId);
@@ -183,6 +184,7 @@ export default function App() {
                 currentRank={currentRank}
                 onLogout={handleLogout}
                 onUpdateName={updateProfileName}
+                onUpdateAvatar={updateProfileAvatar}
               />
             )}
             {page === "history" && (

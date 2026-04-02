@@ -1,58 +1,37 @@
 # GRINDTRACKER
 
 ## Current State
-- Full-stack PWA with Dashboard, Tasks, Leaderboard, Social, Profile pages
-- 5-tier rank system: Rookie, Grinder, Consistent, Disciplined, Elite
-- Leaderboard has 14 seeded fake example users plus the current user
-- Theme: dark blue-black background with orange accent color
-- No History page exists
-- Ranks have no icons, just text badges
-- Orange is the primary accent color across the entire UI
+- Leaderboard page has two tabs: Global and Friends
+- Dashboard shows today's date but weekly chart only shows day abbreviations (Mon, Tue...) without actual dates
+- Profile has editable name but no way to change profile picture (avatar is auto-generated initials)
+- Social page shows friends list and invite links but no messaging/chat feature
+- useGrindStore stores profile with avatar (initials string) and friends list
 
 ## Requested Changes (Diff)
 
 ### Add
-- History page (new route `history`) accessible from BottomNav:
-  - "Preset Tasks" tab: save task templates (title, category, priority, estimatedMinutes, repeatType). Tapping a preset instantly adds it as today's task.
-  - "Completed" tab: chronological list of all completed tasks across all dates, grouped by date
-- 10-tier rank system with icons:
-  1. Rookie 🌱 (0–10)
-  2. Apprentice 📚 (11–20)
-  3. Grinder ⚡ (21–30)
-  4. Hustler 💼 (31–40)
-  5. Consistent 🎯 (41–50)
-  6. Disciplined 🛡️ (51–60)
-  7. Warrior ⚔️ (61–70)
-  8. Champion 🏆 (71–80)
-  9. Legend 🦅 (81–90)
-  10. Elite 👑 (91–100)
-- Rank icons displayed on leaderboard rows, profile rank badge, dashboard rank badge
-- PresetTask type and presetTasks array in GrindStore with addPresetTask / deletePresetTask actions
+- Dates (MM/DD) under day labels in the WeeklyChart on Dashboard
+- Profile picture editing: click avatar to open an emoji/icon picker to set a custom avatar emoji
+- Chat with friends: in Social page, add a "Message" button on each friend card that opens an inline chat panel showing conversation history and a text input; messages stored in localStorage per friend pair
+- updateProfileAvatar function in useGrindStore to persist custom avatar
 
 ### Modify
-- Remove all 14 seeded fake users from leaderboard in `buildEmptyStore`. Leaderboard starts with only the current user. Friends added via invite show up there.
-- Theme: change primary accent from orange (hue ~55) to electric blue (oklch ~0.65 0.22 250). Update all orange/--orange CSS variables and utility classes to blue. Keep purple as secondary rank color. Background stays very dark (near black with slight blue tint).
-- Update `getRank` thresholds to map weeklyScore to the 10-tier system
-- Update `getRankColor` and `getRankBg` for all 10 ranks
-- Update Profile page rank progression section to show all 10 tiers with icons
-- Update BottomNav to add History tab (replace or add alongside existing tabs)
-- Update App.tsx to include `history` page type and render `<History>` component
-- Replace all `text-orange`, `bg-orange`, `border-orange` with `text-blue`/`bg-blue`/`border-blue` equivalents throughout the codebase
+- Leaderboard page: remove the Global tab entirely; show only Friends leaderboard (rename heading to "Friends Leaderboard"). Remove the podium section (only relevant with many users).
+- Dashboard: remove the "LEADERBOARD – THIS WEEK" preview section at the bottom
+- BottomNav: keep "Ranks" nav item pointing to leaderboard (friends-only view is fine)
+- WeeklyChart: show actual date (M/D format) below day abbreviation label
+- Profile avatar: make it clickable, show an emoji picker overlay with ~20 emoji options to pick from
 
 ### Remove
-- All seeded leaderboard entries (l1–l14 fake users)
+- Global leaderboard tab from Leaderboard.tsx
+- Leaderboard preview card from Dashboard.tsx
+- Top 3 podium from Leaderboard.tsx (since it only makes sense with global users)
 
 ## Implementation Plan
-1. Update `index.css`: replace orange OKLCH variables with blue, update all orange utility classes to blue equivalents
-2. Update `tailwind.config.js`: rename orange glow to blue glow box-shadow
-3. Update `useGrindStore.ts`:
-   - Expand RankTier to 10 values
-   - Update getRank, getRankColor, getRankBg
-   - Remove fake leaderboard seed data
-   - Add PresetTask interface and presetTasks to GrindStore
-   - Add addPresetTask/deletePresetTask to hook
-4. Create `src/frontend/src/pages/History.tsx` with Preset Tasks and Completed tabs
-5. Update `App.tsx`: add `history` to Page type, render History page
-6. Update `BottomNav.tsx`: add History nav item (use Clock or History icon from lucide)
-7. Update `Profile.tsx`: show all 10 rank tiers with icons in progression section
-8. Update `Leaderboard.tsx` and `Dashboard.tsx`: show rank icon alongside rank text
+1. Update `WeeklyChart.tsx` to show date (M/D) below day abbreviation — increase chart height slightly or show date as second line in SVG text
+2. Update `Dashboard.tsx` to remove the leaderboard preview section
+3. Update `Leaderboard.tsx` to remove Global tab and podium; show friends-only view directly
+4. Update `useGrindStore.ts` to add `updateProfileAvatar` function and a `chatMessages` map in store (keyed by friendId)
+5. Update `Profile.tsx` to make avatar clickable with an emoji picker overlay
+6. Update `Social.tsx` to add a chat panel per friend with message history and input
+7. Update `App.tsx` to pass `updateProfileAvatar` to Profile

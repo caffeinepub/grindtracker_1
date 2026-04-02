@@ -434,6 +434,19 @@ export function useGrindStore(userId?: string) {
     [updateStore],
   );
 
+  const updateProfileAvatar = useCallback(
+    (emoji: string) => {
+      updateStore((prev) => ({
+        ...prev,
+        profile: { ...prev.profile, avatar: emoji },
+        leaderboard: prev.leaderboard.map((u) =>
+          u.id === "current" ? { ...u, avatar: emoji } : u,
+        ),
+      }));
+    },
+    [updateStore],
+  );
+
   const today = getTodayStr();
   const todayTasks = store.tasks.filter((t) => t.date === today);
   const completedToday = todayTasks.filter((t) => t.isCompleted).length;
@@ -535,6 +548,7 @@ export function useGrindStore(userId?: string) {
     store,
     updateStore,
     updateProfileName,
+    updateProfileAvatar,
     today,
     todayTasks,
     completedToday,

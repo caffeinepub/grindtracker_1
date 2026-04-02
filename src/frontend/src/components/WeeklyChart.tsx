@@ -7,12 +7,13 @@ interface WeeklyChartProps {
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export function WeeklyChart({ dayScores, height = 120 }: WeeklyChartProps) {
+export function WeeklyChart({ dayScores, height = 130 }: WeeklyChartProps) {
   const width = 400;
   const paddingX = 30;
   const paddingY = 16;
-  const chartW = width - paddingX * 2;
-  const chartH = height - paddingY * 2;
+  // Extra bottom padding to fit two lines of text (day + date)
+  const bottomPad = 28;
+  const chartH = height - paddingY - bottomPad;
 
   const scores = dayScores.slice(-7);
   const maxScore = 100;
@@ -20,6 +21,7 @@ export function WeeklyChart({ dayScores, height = 120 }: WeeklyChartProps) {
   if (scores.length === 0) return null;
 
   const points = scores.map((ds, i) => {
+    const chartW = width - paddingX * 2;
     const x = paddingX + (i / (scores.length - 1 || 1)) * chartW;
     const y = paddingY + chartH - (ds.score / maxScore) * chartH;
     return { x, y, score: ds.score, date: ds.date };
@@ -31,6 +33,11 @@ export function WeeklyChart({ dayScores, height = 120 }: WeeklyChartProps) {
   const getDayLabel = (dateStr: string, index: number) => {
     const d = new Date(dateStr);
     return DAYS[d.getDay() === 0 ? 6 : d.getDay() - 1] || DAYS[index % 7];
+  };
+
+  const getDateLabel = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return `${d.getMonth() + 1}/${d.getDate()}`;
   };
 
   return (
@@ -77,16 +84,26 @@ export function WeeklyChart({ dayScores, height = 120 }: WeeklyChartProps) {
         />
       ))}
       {points.map((p, i) => (
-        <text
-          key={p.date}
-          x={p.x}
-          y={height - 2}
-          textAnchor="middle"
-          fontSize={10}
-          fill="oklch(0.62 0.01 220)"
-        >
-          {getDayLabel(p.date, i)}
-        </text>
+        <g key={p.date}>
+          <text
+            x={p.x}
+            y={height - 14}
+            textAnchor="middle"
+            fontSize={10}
+            fill="oklch(0.62 0.01 220)"
+          >
+            {getDayLabel(p.date, i)}
+          </text>
+          <text
+            x={p.x}
+            y={height - 3}
+            textAnchor="middle"
+            fontSize={9}
+            fill="oklch(0.50 0.01 220)"
+          >
+            {getDateLabel(p.date)}
+          </text>
+        </g>
       ))}
     </svg>
   );

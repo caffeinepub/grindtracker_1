@@ -57,9 +57,7 @@ export function Dashboard({
     month: "long",
     day: "numeric",
   });
-  const top3 = [...store.leaderboard]
-    .sort((a, b) => b.weeklyScore - a.weeklyScore)
-    .slice(0, 3);
+
   const previewTasks = todayTasks.slice(0, 5);
 
   const rp = RANK_THRESHOLDS[currentRank];
@@ -236,68 +234,6 @@ export function Dashboard({
                 />
               </div>
             ))}
-          </div>
-        )}
-      </div>
-
-      <div className="card-surface rounded-xl p-4 shadow-card">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center gap-2">
-            <Trophy className="w-4 h-4 text-gold" />
-            <span className="text-sm font-semibold text-foreground">
-              LEADERBOARD – THIS WEEK
-            </span>
-          </div>
-          <button
-            type="button"
-            data-ocid="dashboard.leaderboard.link"
-            onClick={() => onNavigate("leaderboard")}
-            className="text-xs text-blue hover:text-blue/80 flex items-center gap-0.5"
-          >
-            Full board <ChevronRight className="w-3 h-3" />
-          </button>
-        </div>
-        {top3.length === 0 ? (
-          <p className="text-sm text-muted-foreground text-center py-4">
-            No rankings yet. Start completing tasks!
-          </p>
-        ) : (
-          <div className="space-y-2">
-            {top3.map((user, i) => {
-              const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : "🥉";
-              return (
-                <div
-                  key={user.id}
-                  data-ocid={`dashboard.leaderboard.item.${i + 1}`}
-                  className={`flex items-center gap-3 p-2 rounded-lg ${
-                    i === 0
-                      ? "bg-gold/10 border border-gold/20"
-                      : i === 1
-                        ? "bg-muted/20 border border-border"
-                        : "bg-bronze/10 border border-border"
-                  }`}
-                >
-                  <span className="text-lg w-7 text-center">{medal}</span>
-                  <div className="w-8 h-8 rounded-full bg-blue/20 flex items-center justify-center text-xs font-bold text-blue">
-                    {user.avatar}
-                  </div>
-                  <span className="flex-1 text-sm font-medium">
-                    {user.name}
-                  </span>
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-bold uppercase ${getRankBg(user.rank)}`}
-                  >
-                    {user.rank}
-                  </span>
-                  <div className="flex items-center gap-1 bg-muted/40 px-2 py-0.5 rounded-full">
-                    <Flame className="w-3 h-3 text-blue" />
-                    <span className="text-xs font-semibold text-blue">
-                      {user.weeklyScore}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         )}
       </div>
